@@ -1,0 +1,2 @@
+- import_playbook: awsinst3.yml 
+- import_playbook: nginxcent.yml

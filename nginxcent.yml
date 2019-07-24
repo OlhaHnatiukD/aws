@@ -1,0 +1,105 @@
+- hosts: webservers
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Jenkins - install | Install java
+      yum: name=java state=installed
+
+    - name: Ensure Jenkins Repository is Installed
+      yum_repository:
+        name: jenkins
+        state: present
+        description: Official Jenkins Yum Repo
+        baseurl: http://pkg.jenkins.io/redhat
+        gpgkey: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+        gpgcheck: yes
+        enabled: yes
+
+    - name: Ensure Jenkins is Installed
+      yum :
+        name: jenkins
+        update_cache: yes
+        state: present
+
+    - name: Enable and Start the Jenkins Service
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Add epel-release repo
+      yum:
+        name: epel-release
+        state: present
+
+#   - name: Install ufw 
+#     command: yum install --enablerepo="epel" ufw -y
+  
+#   - name: enable service ufw
+#     systemd:
+#       name: ufw
+#       enabled: yes
+ 
+#   - name: Deny port 8080
+#     command: ufw deny 8080
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Move old jenkins conf
+      command: mv /etc/sysconfig/jenkins /etc/sysconfig/jenkins_ntmdf
+
+    - name: Insert Index Page
+      template:
+        src: jenkins 
+        dest: /etc/sysconfig
+
+    - name: Install httpd-tools
+      yum:
+        name: httpd-tools
+        state: present
+
+    - name: Insert file for basic auth
+      template:
+        src: htpasswd.jenk 
+        dest: /etc/nginx/htpasswd.jenk
+
+    - name: Insert nginx host conf
+      template:
+        src: jenkng.conf
+        dest: /etc/nginx/conf.d/jenkng.conf 
+
+    - name: Move old nginx  conf
+      command: mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf_old
+
+    - name: Insert new nginx conf
+      template:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+
+    - name: Start NGiNX
+      service:
+        name: nginx
+        state: started
+
+    - name: Restart service jenkins
+      service:
+        name: jenkins
+        state: restarted
+
+    - name: SELinux
+      command: sudo setsebool -P httpd_can_network_connect 1
+    
+    - name: Restart service nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Get Admin Password
+      become: yes
+      become_method: sudo
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+

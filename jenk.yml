@@ -1,0 +1,43 @@
+- hosts: webservers
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+         upgrade: yes
+         update_cache: yes
+         cache_valid_time: 86400
+    - name: Install dependencies
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - java.VERSION
+        - git
+        - wget
+        - deltarpm
+    - name: Download jenkins repo
+      command: wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    - name: Import Jenkins CI key
+      rpm_key:
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+        state: present
+    - name: Install Jenkins
+      yum:
+        name: "jenkins"
+        state: present
+    - name: Allow port 8080
+      shell: iptables -I INPUT -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+    - name: Start the server
+      service:
+        name: jenkins
+        state: started
+    - wait_for:
+        port: 8080
+        command: cat /var/lib/jenkins/secrets/initialAdminPassword
+    - name: Get Admin Password
+      become: yes
+      become_method: sudo
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
