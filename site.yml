@@ -1,2 +1,5 @@
-- import_playbook: awsinst3.yml 
-- import_playbook: nginxcent.yml
+---
+- hosts: webservers
+  roles:
+    - common
+    - jenk

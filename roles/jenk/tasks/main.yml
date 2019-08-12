@@ -54,7 +54,7 @@
 
     - name: Insert Index Page
       template:
-        src: jenkins 
+        src: /etc/ansible/roles/jenk/templates/jenkins 
         dest: /etc/sysconfig
 
     - name: Install httpd-tools
@@ -64,12 +64,12 @@
 
     - name: Insert file for basic auth
       template:
-        src: htpasswd.jenk 
+        src: /etc/ansible/roles/jenk/templates/htpasswd.jenk 
         dest: /etc/nginx/htpasswd.jenk
 
     - name: Insert nginx host conf
       template:
-        src: jenkng.conf
+        src: /etc/ansible/roles/jenk/templates/jenkng.conf
         dest: /etc/nginx/conf.d/jenkng.conf 
 
     - name: Move old nginx  conf
@@ -77,7 +77,7 @@
 
     - name: Insert new nginx conf
       template:
-        src: nginx.conf
+        src: /etc/ansible/roles/jenk/templates/nginx.conf
         dest: /etc/nginx/nginx.conf
 
     - name: Start NGiNX
