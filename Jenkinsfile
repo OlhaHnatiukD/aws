@@ -3,7 +3,7 @@ pipeline {
         stages {
         stage ('Check ansible connectivity') {
         steps {
-                sh 'ansible -m ping  webservers '
+                sh 'ansible -m ping  webservers  -e ansible_python_interpreter=/usr/bin/python2.7 '
         }
         }
   stage ('Run-Playbook'){
