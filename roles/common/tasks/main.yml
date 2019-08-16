@@ -7,8 +7,8 @@
    image: ami-dd3c0f36
    keypair: ForNewInstance1 
    region: eu-central-1
-  vars_files:
-  - /etc/ansible/roles/common/credent.yml
+ #vars_files:
+ #- /etc/ansible/roles/common/credent.yml
   tasks:
   - name: make one instance
     ec2: 
