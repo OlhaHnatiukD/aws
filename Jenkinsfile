@@ -1,11 +1,6 @@
 pipeline {
 	agent any
 	stages {
-stage('Download Resources') {
-	steps {
-		git 'https://github.com/OlhaHnatiukD/aws.git'
-	}
-	}
 	stage ('Check ansible connectivity') {
 	steps {
 		sh 'ansible -m ping webservers  -e ansible_python_interpreter=/usr/bin/python2.7'
