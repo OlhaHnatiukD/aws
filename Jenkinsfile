@@ -8,8 +8,8 @@ pipeline {
 	}
   stage ('Run-Playbook'){
   steps{
-    sh 'ansible-playbook /etc/ansible/roles/common/tasks/main.yml  -e ansible_python_interpreter=/usr/bin/python2.7  --ask-vault-pass'
-  }
+    ansiblePlaybook credentialsId: 'aws', inventory: 'hosts', playbook: '/etc/ansible/roles/common/tasks/main.yml'
+	   }
   }
 }
 }
