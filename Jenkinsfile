@@ -8,7 +8,7 @@ pipeline {
 	}
   stage ('Run-Playbook'){
   steps{
-    ansiblePlaybook credentialsId: 'aws', inventory: 'hosts', playbook: '/etc/ansible/roles/common/tasks/main.yml'
+    ansiblePlaybook credentialsId: 'aws1', inventory: 'hosts', playbook: '/etc/ansible/roles/common/tasks/main.yml'
 	   }
   }
 }
